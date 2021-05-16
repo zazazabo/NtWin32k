@@ -370,7 +370,7 @@ typedef struct _DEVICE_MAP
     UCHAR DriveType[32];
 } DEVICE_MAP, * PDEVICE_MAP;
 
-extern "C" NTSTATUS NtQuerySystemInformation(
+extern "C" NTSTATUS ZwQuerySystemInformation (
 	SYSTEM_INFORMATION_CLASS SystemInformationClass,
 	PVOID                    SystemInformation,
 	ULONG                    SystemInformationLength,
@@ -395,7 +395,7 @@ namespace kutils
         inline auto get_driver_base(const char* driver_name) -> void*
         {
             u32 alloc_size{};
-            NtQuerySystemInformation(
+            ZwQuerySystemInformation (
                 SystemModuleInformation,
                     NULL, alloc_size, &alloc_size);
 
@@ -403,7 +403,7 @@ namespace kutils
                 reinterpret_cast<PRTL_PROCESS_MODULES>(
                     ExAllocatePool(NonPagedPool, alloc_size));
 
-            NtQuerySystemInformation(
+            ZwQuerySystemInformation (
                 SystemModuleInformation,
                     module_info, alloc_size, &alloc_size);
 
@@ -592,7 +592,7 @@ namespace kutils
         inline auto get_pid(const wchar_t* process_name) -> u32
         {
             u32 alloc_size{};
-            NtQuerySystemInformation(
+            ZwQuerySystemInformation (
                 SystemProcessInformation, 
                     nullptr, alloc_size, &alloc_size);
 
@@ -601,7 +601,7 @@ namespace kutils
                     ExAllocatePool(NonPagedPool, alloc_size));
             
             const auto orig_ptr = process_info;
-            NtQuerySystemInformation(
+            ZwQuerySystemInformation (
                 SystemProcessInformation, 
                     process_info, alloc_size, &alloc_size);
 
